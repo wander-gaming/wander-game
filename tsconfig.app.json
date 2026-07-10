@@ -11,10 +11,9 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "types": ["vitest/globals"],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@server/*": ["server/*"]
+      "@/*": ["./src/*"],
+      "@server/*": ["./server/*"]
     }
   },
   "include": ["src", "server"]
