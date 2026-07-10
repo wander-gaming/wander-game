@@ -1,0 +1,36 @@
+name: Capacitor Android Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  cap-sync:
+    name: Capacitor Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - run: npx cap sync android
+        continue-on-error: true
+
+      - name: Gradle assembleDebug (requires Android SDK)
+        run: make cap-android-smoke
+        continue-on-error: true
