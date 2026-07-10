@@ -1,19 +1,29 @@
 import type { StateCreator } from "zustand";
 import type {
   SheetTemplate,
+  SectionDefinition,
   Character,
   CharacterSheet,
   FieldDefinition,
   FieldValue,
   ValidationResult,
+  Token,
 } from "@/types/index";
 
 export interface CharacterSlice {
   templates: SheetTemplate[];
   characters: Character[];
   sheets: CharacterSheet[];
+  tokens: Token[];
+  setTokens: (tokens: Token[]) => void;
+  updateTokenPosition: (tokenId: string, x: number, y: number) => void;
+  addTemplate: (template: SheetTemplate) => void;
   addField: (templateId: string, field: FieldDefinition) => ValidationResult;
   deleteField: (templateId: string, fieldId: string) => void;
+  addSection: (templateId: string, section: SectionDefinition) => void;
+  deleteSection: (templateId: string, sectionId: string) => void;
+  assignFieldToSection: (templateId: string, sectionId: string, fieldId: string) => void;
+  unassignFieldFromSection: (templateId: string, sectionId: string, fieldId: string) => void;
   updateSheetValue: (sheetId: string, fieldId: string, value: FieldValue) => ValidationResult;
 }
 
@@ -21,6 +31,73 @@ export const createCharacterSlice: StateCreator<CharacterSlice> = (set, get) => 
   templates: [],
   characters: [],
   sheets: [],
+  tokens: [],
+
+  setTokens(tokens) {
+    set({ tokens });
+  },
+
+  updateTokenPosition(tokenId, x, y) {
+    set({ tokens: get().tokens.map((t) => (t.id === tokenId ? { ...t, x, y } : t)) });
+  },
+
+  addTemplate(template) {
+    set({ templates: [...get().templates, template] });
+  },
+
+  addSection(templateId, section) {
+    const { templates } = get();
+    set({
+      templates: templates.map((t) =>
+        t.id === templateId ? { ...t, sections: [...t.sections, section] } : t
+      ),
+    });
+  },
+
+  deleteSection(templateId, sectionId) {
+    const { templates } = get();
+    set({
+      templates: templates.map((t) =>
+        t.id === templateId
+          ? { ...t, sections: t.sections.filter((s) => s.id !== sectionId) }
+          : t
+      ),
+    });
+  },
+
+  assignFieldToSection(templateId, sectionId, fieldId) {
+    const { templates } = get();
+    set({
+      templates: templates.map((t) => {
+        if (t.id !== templateId) return t;
+        return {
+          ...t,
+          sections: t.sections.map((s) =>
+            s.id === sectionId && !s.fieldIds.includes(fieldId)
+              ? { ...s, fieldIds: [...s.fieldIds, fieldId] }
+              : s
+          ),
+        };
+      }),
+    });
+  },
+
+  unassignFieldFromSection(templateId, sectionId, fieldId) {
+    const { templates } = get();
+    set({
+      templates: templates.map((t) => {
+        if (t.id !== templateId) return t;
+        return {
+          ...t,
+          sections: t.sections.map((s) =>
+            s.id === sectionId
+              ? { ...s, fieldIds: s.fieldIds.filter((id) => id !== fieldId) }
+              : s
+          ),
+        };
+      }),
+    });
+  },
 
   addField(templateId, field) {
     const { templates, sheets } = get();
