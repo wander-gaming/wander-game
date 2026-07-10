@@ -21,6 +21,7 @@ export interface MapSlice {
   redo: () => void;
   setZoom: (z: number) => void;
   setPan: (dx: number, dy: number) => void;
+  revealTiles: (tokenX: number, tokenY: number, visionRadius: number, mapId: string) => void;
 }
 
 export const createMapSlice: StateCreator<MapSlice> = (set, get) => ({
@@ -101,7 +102,25 @@ export const createMapSlice: StateCreator<MapSlice> = (set, get) => ({
   setZoom: (z) => set({ zoom: Math.min(4.0, Math.max(0.25, z)) }),
 
   setPan: (dx, dy) => set({ pan: { x: dx, y: dy } }),
-});
+
+  revealTiles: (tokenX, tokenY, visionRadius, mapId) => {
+    const { map } = get();
+    if (!map || map.id !== mapId) return;
+    const updates: GameMap["tiles"] = {};
+    for (let x = Math.max(0, tokenX - visionRadius); x <= Math.min(map.width - 1, tokenX + visionRadius); x++) {
+      for (let y = Math.max(0, tokenY - visionRadius); y <= Math.min(map.height - 1, tokenY + visionRadius); y++) {
+        if (Math.max(Math.abs(x - tokenX), Math.abs(y - tokenY)) <= visionRadius) {
+          const key = `${x},${y}`;
+          const tile = map.tiles[key] ?? { x, y, terrain: "void" as TerrainType, structuralElement: null, hidden: false, revealed: false };
+          updates[key] = { ...tile, revealed: true };
+        }
+      }
+    }
+    set((s) => ({
+      map: { ...s.map!, tiles: { ...s.map!.tiles, ...updates } },
+    }));
+  },
+})
 
 function applyMutationBefore(map: GameMap, mutation: MapMutation): GameMap {
   if (mutation.type === "paint") {

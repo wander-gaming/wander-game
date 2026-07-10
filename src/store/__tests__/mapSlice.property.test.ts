@@ -78,3 +78,53 @@ describe("Property 2: Undo/redo round-trip", () => {
     );
   });
 });
+
+// Feature: wander-game, Property 6: Fog reveal radius
+describe("Property 6: Fog reveal radius", () => {
+  it("all tiles within Chebyshev radius are revealed", () => {
+    // **Validates: Requirements 2.4**
+    fc.assert(
+      fc.property(
+        fc.record({
+          tx: fc.integer({ min: 0, max: 9 }),
+          ty: fc.integer({ min: 0, max: 9 }),
+          r: fc.integer({ min: 0, max: 3 }),
+        }),
+        ({ tx, ty, r }) => {
+          const tiles: GameMap["tiles"] = {};
+          for (let x = 0; x < 10; x++) {
+            for (let y = 0; y < 10; y++) {
+              tiles[`${x},${y}`] = { x, y, terrain: "grass", structuralElement: null, hidden: false, revealed: false };
+            }
+          }
+          const map: GameMap = {
+            id: "fog-test",
+            schemaVersion: 1,
+            createdAt: "2024-01-01T00:00:00Z",
+            updatedAt: "2024-01-01T00:00:00Z",
+            campaignId: "test-campaign",
+            name: "Fog Test Map",
+            width: 10,
+            height: 10,
+            cellSize: 32,
+            tiles,
+            layers: [],
+          };
+
+          const store = create<MapSlice>()((...a) => createMapSlice(...a));
+          store.setState({ map });
+          store.getState().revealTiles(tx, ty, r, "fog-test");
+
+          const resultMap = store.getState().map!;
+          for (let x = 0; x < 10; x++) {
+            for (let y = 0; y < 10; y++) {
+              if (Math.max(Math.abs(x - tx), Math.abs(y - ty)) <= r) {
+                expect(resultMap.tiles[`${x},${y}`].revealed).toBe(true);
+              }
+            }
+          }
+        }
+      )
+    );
+  });
+});
