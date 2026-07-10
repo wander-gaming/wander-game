@@ -45,6 +45,9 @@ server/
 
 Early stage. The core specifications and architecture are defined; foundational implementation is currently in progress.
 
+## Aim
+<img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/0dedbeaf-e5b3-433d-896e-872b8cedfbc5" />
+
 ## Getting Started
 
 ```bash
