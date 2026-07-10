@@ -19,6 +19,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      include: ["src/store/**/*.ts"],
+      exclude: ["src/store/__tests__/**", "src/store/index.ts", "src/store/sessionSlice.ts"],
+      thresholds: {
+        lines: 70,
+        functions: 70,
+        branches: 55,
+        statements: 70,
+      },
     },
   },
 });
