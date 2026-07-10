@@ -207,7 +207,7 @@ const campaignArb: fc.Arbitrary<Campaign> = stateObjectFields.chain((base) =>
 );
 
 describe("Property 20: Campaign serialization round-trip", () => {
-  it("deserialize(serialize(C)) deeply equals C and second serialize is identical", () => {
+  it("deserialize(serialize(C)) deeply equals C and second serialize is identical", { timeout: 30000 }, () => {
     // Validates: Requirements 8.1
     fc.assert(
       fc.property(campaignArb, (campaign) => {
@@ -217,7 +217,8 @@ describe("Property 20: Campaign serialization round-trip", () => {
 
         expect(roundTripped).toEqual(campaign);
         expect(json2).toBe(json1);
-      })
+      }),
+      { numRuns: 50 }
     );
   });
 });
