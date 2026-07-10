@@ -19,10 +19,12 @@ export function initFogRenderer(app: PIXI.Application): void {
     const state = store.getState();
     const { map, session, cellSize } = state;
     const godMode = session?.godModeEnabled ?? false;
+    const sessionActive = session !== null;
 
-    fogLayer.visible = !godMode;
+    // only apply fog during an active session
+    fogLayer.visible = sessionActive && !godMode;
 
-    if (!map || godMode) return;
+    if (!map || !sessionActive || godMode) return;
 
     const w = app.screen.width;
     const h = app.screen.height;

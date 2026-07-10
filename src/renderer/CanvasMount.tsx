@@ -10,21 +10,25 @@ export function CanvasMount() {
     if (!container) return;
 
     const app = new PIXI.Application();
-    let mounted = true;
+    let initialized = false;
+    let cancelled = false;
 
     (async () => {
       await app.init({ resizeTo: container });
-      if (!mounted) {
-        app.destroy(true);
+      if (cancelled) {
+        app.destroy();
         return;
       }
+      initialized = true;
       container.appendChild(app.canvas);
       initRenderer(app);
     })();
 
     return () => {
-      mounted = false;
-      app.destroy(true);
+      cancelled = true;
+      if (initialized) {
+        app.destroy();
+      }
     };
   }, []);
 

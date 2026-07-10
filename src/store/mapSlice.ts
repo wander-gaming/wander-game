@@ -8,6 +8,37 @@ import type {
   Tile,
 } from "@/types";
 
+function createDefaultMap(): GameMap {
+  const now = new Date().toISOString();
+  const width = 32;
+  const height = 32;
+  const tiles: GameMap["tiles"] = {};
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const key = `${x},${y}`;
+      tiles[key] = { x, y, terrain: "grass", structuralElement: null, hidden: false, revealed: false };
+    }
+  }
+  return {
+    id: "default-map",
+    schemaVersion: 1,
+    createdAt: now,
+    updatedAt: now,
+    campaignId: "default",
+    name: "New Map",
+    width,
+    height,
+    cellSize: 32,
+    tiles,
+    layers: [
+      { id: "terrain", name: "Terrain", zIndex: 0, visible: true },
+      { id: "objects", name: "Objects", zIndex: 1, visible: true },
+      { id: "characters", name: "Characters", zIndex: 2, visible: true },
+      { id: "fog", name: "Fog", zIndex: 3, visible: true },
+    ],
+  };
+}
+
 export interface MapSlice {
   map: GameMap | null;
   cellSize: CellSize;
@@ -25,7 +56,7 @@ export interface MapSlice {
 }
 
 export const createMapSlice: StateCreator<MapSlice> = (set, get) => ({
-  map: null,
+  map: createDefaultMap(),
   cellSize: 32,
   zoom: 1,
   pan: { x: 0, y: 0 },
