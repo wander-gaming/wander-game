@@ -75,12 +75,12 @@ const campaignArb: fc.Arbitrary<Campaign> = stateObjectFields.chain((base) =>
     name: fc.string({ minLength: 1 }),
     ownerId: fc.uuid(),
     maps: fc.array(gameMapArb, { minLength: 1, maxLength: 2 }),
-    templates: fc.array(fc.constant({ ...({} as never) }), { maxLength: 0 }).map(() => []),
-    characters: fc.array(fc.constant({ ...({} as never) }), { maxLength: 0 }).map(() => []),
-    sheets: fc.array(fc.constant({ ...({} as never) }), { maxLength: 0 }).map(() => []),
+    templates: fc.constant([] as Campaign["templates"]),
+    characters: fc.constant([] as Campaign["characters"]),
+    sheets: fc.constant([] as Campaign["sheets"]),
     tokens: fc.array(tokenArb, { maxLength: 3 }),
-    story: fc.constant({ nodes: [], edges: [] }),
-    triggers: fc.array(fc.constant({ ...({} as never) }), { maxLength: 0 }).map(() => []),
+    story: fc.constant({ nodes: [] as Campaign["story"]["nodes"], edges: [] as Campaign["story"]["edges"] }),
+    triggers: fc.constant([] as Campaign["triggers"]),
   }).map((rest) => ({ ...base, ...rest }))
 );
 
@@ -91,7 +91,7 @@ const sessionArb: fc.Arbitrary<Session> = stateObjectFields.chain((base) =>
     activeMapId: fc.uuid(),
     godModeEnabled: fc.boolean(),
     playerMovementEnabled: fc.boolean(),
-    eventLog: fc.constant([]),
+    eventLog: fc.constant([] as Session["eventLog"]),
   }).map((rest) => ({ ...base, ...rest }))
 );
 
