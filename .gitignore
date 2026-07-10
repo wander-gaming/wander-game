@@ -1,6 +1,44 @@
-*/specs/*
+# ==========================================
+# Dependencies & Package Managers
+# ==========================================
 node_modules/
-.vscode*
-coverage/
+npm-debug.log*
+
+# ==========================================
+# Build Outputs & Caches
+# ==========================================
 dist/
+dist-ssr/
+out/
+.turbo/
+.eslintcache
+.stylelintcache
+.vite-inspect
 *.tsbuildinfo
+
+# ==========================================
+# Testing & Specifications
+# ==========================================
+coverage/
+*/specs/
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.local
+
+# ==========================================
+# IDEs & System Files
+# ==========================================
+.vscode/
+.vscode*
+logs/
+*.log
+
+# ==========================================
+# Platform Specific (Tauri / Mobile)
+# ==========================================
+src-tauri/target/

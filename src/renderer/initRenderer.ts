@@ -9,6 +9,6 @@ export function initRenderer(app: PIXI.Application): void {
   initLayers(app);
   initViewport(app);
   initTileRenderer(app);
-  initFogRenderer(app);
   initTokenRenderer(app);
+  initFogRenderer(app);
 }
