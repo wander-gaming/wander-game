@@ -6,6 +6,7 @@ import type {
   Campaign,
   StoryNode,
   TriggerAction,
+  TriggerCondition,
 } from "@/types";
 
 const isoDate = fc
