@@ -44,7 +44,22 @@ jobs:
 
       - run: npm ci
 
+      - name: Generate placeholder icons
+        shell: bash
+        run: |
+          mkdir -p src-tauri/icons
+          node -e "
+          const fs = require('fs');
+          const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
+          ['icon.png','32x32.png','128x128.png','128x128@2x.png','Square30x30Logo.png','Square44x44Logo.png','Square71x71Logo.png','Square89x89Logo.png','Square107x107Logo.png','Square142x142Logo.png','Square150x150Logo.png','Square284x284Logo.png','Square310x310Logo.png','StoreLogo.png'].forEach(n => {
+            const p = 'src-tauri/icons/' + n;
+            if (!fs.existsSync(p)) fs.writeFileSync(p, png);
+          });
+          if (!fs.existsSync('src-tauri/icons/icon.icns')) fs.writeFileSync('src-tauri/icons/icon.icns', Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'));
+          if (!fs.existsSync('src-tauri/icons/icon.ico')) fs.writeFileSync('src-tauri/icons/icon.ico', Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'));
+          "
+
       - uses: tauri-apps/tauri-action@v0
         with:
           projectPath: .
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} --no-bundle
