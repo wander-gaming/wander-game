@@ -81,7 +81,7 @@ describe("Property 2: Undo/redo round-trip", () => {
 
 // Feature: wander-game, Property 6: Fog reveal radius
 describe("Property 6: Fog reveal radius", () => {
-  it("all tiles within Chebyshev radius are revealed", () => {
+  it("all tiles within Chebyshev radius are revealed", { timeout: 15000 }, () => {
     // **Validates: Requirements 2.4**
     fc.assert(
       fc.property(

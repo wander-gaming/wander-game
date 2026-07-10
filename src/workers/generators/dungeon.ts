@@ -79,6 +79,7 @@ function collectFloor(node: Node, floor: Set<string>, corridors: Set<string>): v
       corridors.add(`${cx},${ay}`);
       cx += cx < bx ? 1 : -1;
     }
+    corridors.add(`${bx},${ay}`);
     let cy = ay;
     while (cy !== by) {
       corridors.add(`${bx},${cy}`);
